@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Control Porcino - Web App</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
+    .box { background: white; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 0 5px #ccc; }
+    h2 { margin-top: 0; }
+    input, select, button { margin: 5px 0; padding: 10px; width: 100%; max-width: 400px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="box" id="loginBox">
+  <h2>Inicio de Sesión</h2>
+  <input id="usuario" placeholder="Usuario" />
+  <input id="clave" type="password" placeholder="Contraseña" />
+  <button onclick="iniciarSesion()">Entrar</button>
+</div>
+
+<div class="box hidden" id="formularioApp">
+  <h2>Control Porcino</h2>
+
+  <h3>Registrar Gasto</h3>
+  <input id="gastoDesc" placeholder="Descripción" />
+  <input id="gastoMonto" type="number" placeholder="Monto" />
+  <button onclick="registrarGasto()">Guardar Gasto</button>
+
+  <h3>Registrar Venta</h3>
+  <input id="ventaDesc" placeholder="Descripción de venta" />
+  <input id="ventaMonto" type="number" placeholder="Monto de venta" />
+  <button onclick="registrarVenta()">Guardar Venta</button>
+
+  <h3>Inventario de Cerdos</h3>
+  <input id="cerdoID" placeholder="ID del cerdo" />
+  <input id="cerdoPeso" type="number" placeholder="Peso (kg)" />
+  <select id="cerdoSexo">
+    <option value="Macho">Macho</option>
+    <option value="Hembra">Hembra</option>
+  </select>
+  <button onclick="registrarCerdo()">Agregar al Inventario</button>
+
+  <h3>Vacunas</h3>
+  <input id="vacunaID" placeholder="ID del cerdo" />
+  <input id="vacunaDesc" placeholder="Vacuna aplicada" />
+  <input id="vacunaFecha" type="date" />
+  <button onclick="registrarVacuna()">Registrar Vacuna</button>
+
+  <h3>Partos</h3>
+  <input id="partoID" placeholder="ID madre" />
+  <input id="partoFecha" type="date" />
+  <input id="partoCantidad" type="number" placeholder="Cantidad de lechones" />
+  <button onclick="registrarParto()">Registrar Parto</button>
+
+  <h3>Resumen</h3>
+  <pre id="resumen"></pre>
+</div>
+
+<script>
+  let data = {
+    gastos: [],
+    ventas: [],
+    inventario: [],
+    vacunas: [],
+    partos: []
+  };
+
+  function iniciarSesion() {
+    const u = document.getElementById("usuario").value;
+    const c = document.getElementById("clave").value;
+    if (u === "admin" && c === "1234") {
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("formularioApp").classList.remove("hidden");
+    } else {
+      alert("Usuario o contraseña incorrectos");
+    }
+  }
+
+  function registrarGasto() {
+    const desc = document.getElementById("gastoDesc").value;
+    const monto = parseFloat(document.getElementById("gastoMonto").value);
+    if (desc && !isNaN(monto)) {
+      data.gastos.push({ desc, monto });
+      actualizarResumen();
+      alert("Gasto registrado");
+    }
+  }
+
+  function registrarVenta() {
+    const desc = document.getElementById("ventaDesc").value;
+    const monto = parseFloat(document.getElementById("ventaMonto").value);
+    if (desc && !isNaN(monto)) {
+      data.ventas.push({ desc, monto });
+      actualizarResumen();
+      alert("Venta registrada");
+    }
+  }
+
+  function registrarCerdo() {
+    const id = document.getElementById("cerdoID").value;
+    const peso = parseFloat(document.getElementById("cerdoPeso").value);
+    const sexo = document.getElementById("cerdoSexo").value;
+    if (id && !isNaN(peso)) {
+      data.inventario.push({ id, peso, sexo });
+      actualizarResumen();
+      alert("Cerdo agregado al inventario");
+    }
+  }
+
+  function registrarVacuna() {
+    const id = document.getElementById("vacunaID").value;
+    const desc = document.getElementById("vacunaDesc").value;
+    const fecha = document.getElementById("vacunaFecha").value;
+    if (id && desc && fecha) {
+      data.vacunas.push({ id, desc, fecha });
+      actualizarResumen();
+      alert("Vacuna registrada");
+    }
+  }
+
+  function registrarParto() {
+    const id = document.getElementById("partoID").value;
+    const fecha = document.getElementById("partoFecha").value;
+    const cantidad = parseInt(document.getElementById("partoCantidad").value);
+    if (id && fecha && !isNaN(cantidad)) {
+      data.partos.push({ id, fecha, cantidad });
+      actualizarResumen();
+      alert("Parto registrado");
+    }
+  }
+
+  function actualizarResumen() {
+    document.getElementById("resumen").textContent = JSON.stringify(data, null, 2);
+  }
+</script>
+</body>
+</html>
